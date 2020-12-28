@@ -36,3 +36,9 @@ def time_quality():
 
 def verify():
     pass
+
+def sbs(sbs):
+    pass
+
+def eof():
+    pass

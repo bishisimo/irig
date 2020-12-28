@@ -87,12 +87,18 @@ def send_control():
     utils.vacancy()
     utils.p_unit()
     utils.time_quality()
-    # utils.verify()
+    utils.verify()
     utils.vacancy()
     utils.time_quality()
 
 def send_sbs(num):
-    ...
+    """
+    SBS、基准标志、SBS、结束标志
+    """
+    utils.sbs(num)
+    utils.p_unit()
+    utils.sbs(num)
+    utils.eof()
 
 if __name__ == "__main__":
     print(bcd(10))
