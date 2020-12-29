@@ -6,6 +6,7 @@ def unit(n):
     drive.gpio_high()
     time.sleep(n)
     drive.gpio_low
+    time.sleep(const.pu_time-n)
 
 def zero():
     unit(const.zero_time)
@@ -38,7 +39,4 @@ def verify():
     pass
 
 def sbs(sbs):
-    pass
-
-def eof():
     pass

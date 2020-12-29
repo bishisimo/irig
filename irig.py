@@ -1,5 +1,5 @@
 import utils
-
+import const
 
 def send_time(year,day, hour, mi, sec):
     """
@@ -12,7 +12,6 @@ def send_time(year,day, hour, mi, sec):
     分（个位）、分隔标志、分（十位）、基准标志
     时（个位）、分隔标志、时（十位）、基准标志
     自当年元旦开始的天（个位）、分隔标志、天（十位）、基准标志、天（百位）、分隔标志、未编码位、基准标志
-    年（个位）、分隔标志、年（十位）、基准标志（前面各数均为BCD码）
     未编码位、分隔标志、未编码位、基准标志
     时间质量标志、校验位、未编码位、基准标志、
     SBS、基准标志
@@ -25,7 +24,6 @@ def send_time(year,day, hour, mi, sec):
     send_min(mi)#分（个位）、分隔标志、分（十位）、基准标志
     send_hour(hour)#时（个位）、分隔标志、时（十位）、基准标志
     send_day(day)#自当年元旦开始的天（个位）、分隔标志、天（十位）、基准标志、天（百位）、分隔标志、未编码位、基准标志
-    send_year(year)#年（个位）、分隔标志、年（十位）、基准标志（前面各数均为BCD码）
     send_control()#未编码位、分隔标志、未编码位、基准标志+时间质量标志、校验位、未编码位、基准标志
     send_sbs(sbs)#SBS、基准标志、SBS、结束标志
 
@@ -36,7 +34,7 @@ def bcd(dec) -> list:
     """
     result = [0,0,0,0]
     for i in range(4):
-        result[3-i]=dec&0b1
+        result[i]=dec&0b1
         dec>>=1
     return result
 
@@ -53,6 +51,15 @@ def send_data(data,digit=2):
         if i <digit-1:
             utils.divide()
     utils.p_unit()
+
+def send_unit(data,digit):
+    bits=[]
+    low=data%10
+    bits.append(*bcd(low))
+    bits.append(const.division_point)
+    high=data//10
+    bits.append(*(bcd(high)[:-1]))
+
 
 def send_sec(sec):
     send_data(sec)
@@ -71,12 +78,6 @@ def send_day(day):
     utils.divide()
     utils.vacancy()
     utils.p_unit()
-
-def send_year(year):
-    """
-    年（个位）、分隔标志、年（十位）、基准标志（前面各数均为BCD码）
-    """
-    send_data(year)
 
 def send_control():
     """
@@ -98,7 +99,7 @@ def send_sbs(num):
     utils.sbs(num)
     utils.p_unit()
     utils.sbs(num)
-    utils.eof()
+    utils.p_unit()
 
 if __name__ == "__main__":
     print(bcd(10))
